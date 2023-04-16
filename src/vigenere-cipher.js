@@ -19,16 +19,78 @@ const { NotImplementedError } = require('../extensions/index.js');
  * reverseMachine.decrypt('AEIHQX SX DLLU!', 'alphonse') => '!NWAD TA KCATTA'
  * 
  */
+
+
+
 class VigenereCipheringMachine {
-  encrypt() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+  constructor(noReverse = true) {
+    this.noReverse = noReverse; 
   }
-  decrypt() {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+
+  
+  encrypt(message, key) {
+    if (!message || !key) {
+      throw new Error('Incorrect arguments!');
+    }
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                    
+    const lettersNum = {};
+    for (let i = 0; i < letters.length; i++) {
+      lettersNum[letters[i]] = i;
+    }
+    
+    let crypto = '';
+    key = key.toUpperCase();
+      message =  message.toUpperCase()
+
+
+    for (let i = 0, j = 0; i < message.length; i++) {
+      if (letters.includes(message[i])) {
+        // crypto += letters[(lettersNum[message[i]] + lettersNum[key[i % key.length]]) % letters.length]
+        let keyNumber = letters.indexOf(key[j % key.length]);
+        let messageNumber = letters.indexOf(message[i]);
+        let cryptoLetterNumber = (messageNumber + keyNumber) % letters.length;
+        let cryptoLetter = letters[cryptoLetterNumber];
+        crypto += cryptoLetter;
+        j++
+      } else crypto += message[i];
+      
+    }
+  
+    return this.noReverse ? crypto : crypto.split('').reverse().join('');
+
+  }
+  decrypt(message, key) {
+    if (!message || !key) {
+      throw new Error('Incorrect arguments!');
+    }
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const lettersNum = {};
+    for (let i = 0; i < letters.length; i++) {
+      lettersNum[letters[i]] = i;
+    }
+    key = key.toUpperCase();
+    message =  message.toUpperCase()
+    let decrypto = '';
+
+    for (let i = 0, j = 0; i < message.length; i++) {
+      if (letters.includes(message[i])) {
+        let keyNumber = letters.indexOf(key[j % key.length]);
+        let messageNumber = letters.indexOf(message[i]);
+        let cryptoLetterNumber = (messageNumber - keyNumber + letters.length) % letters.length;
+        let cryptoLetter = letters[cryptoLetterNumber];
+        decrypto += cryptoLetter;
+        j++
+        // decrypto += letters[(lettersNum[message[i]] - lettersNum[key[i % key.length]] + letters.length) % letters.length]
+      } else decrypto += message[i];
+    }
+    return this.noReverse ? decrypto : decrypto.split('').reverse().join('');
+
   }
 }
+// const directMachine = new VigenereCipheringMachine();
+// console.log(directMachine.encrypt('attack at dawn!', 'alphonse'))
+// console.log(directMachine.decrypt('AEIHQX SX DLLU!', 'alphonse'));
 
 module.exports = {
   VigenereCipheringMachine
