@@ -13,20 +13,28 @@ const { NotImplementedError } = require('../extensions/index.js');
 
 
 function encodeLine(str) {
-  // let str = 'aabbbc';
-  let newStr = '';
-  let count = 1;
-  for (let i=1; i < str.length; i++) {
-    if (str[i] === str[i-1]) {
-      count++;
-    } else {
-      newStr += (count === 1 ? '' : count) + str[i - 1];
-      count = 1;
+  if (str === '') {
+    return '';
+  } else {
+    let newStr = '';
+    let count = 1;
+    for (let i=1; i < str.length; i++) {
+      if (str[i] === str[i-1]) {
+        count++;
+      } else {
+        newStr += (count === 1 ? '' : count) + str[i - 1];
+        count = 1;
+      }
     }
+    newStr += (count === 1 ? '' : count) + str[str.length - 1];
+    return newStr;
   }
-  newStr += (count === 1 ? '' : count) + str[str.length - 1];
-  return newStr;
+
+
 }
+
+// encodeLine('aabbbcd')
+
 
 module.exports = {
   encodeLine
